@@ -10,28 +10,29 @@ export function Header() {
 
   // Optimized scroll for mobile and desktop
   const scrollToSection = (id: string) => {
-    // 1. Close the mobile menu first
+    // 1. Immediately trigger the menu to close
     setMobileMenuOpen(false);
 
-    // 2. Check if we are on the home page (works for HashRouter and BrowserRouter)
-    const isHomePage = window.location.pathname === "/" || window.location.hash === "#/";
+    // 2. Detection for GitHub Pages HashRouter
+    const isHomePage = window.location.hash === "#/" || window.location.hash === "" || window.location.pathname === "/";
 
     if (!isHomePage) {
-      // If not on home, go home first
+      // If we are on a different page (like /team), go home first
       navigate("/");
-      // Give the page a moment to load before searching for the ID
+      // Wait for the home page to mount and the menu to slide away
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 300);
+      }, 400); 
     } else {
-      // If already on home, wait for mobile menu animation to clear
+      // If already on home, wait briefly for the mobile menu to clear the screen
+      // This prevents the "scroll-cancel" glitch on mobile browsers
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }, 150);
     }
@@ -113,7 +114,7 @@ export function Header() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group"
+                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group cursor-pointer"
                 >
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
@@ -166,7 +167,7 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-[#0A0A0A] border-t border-[#606060]/20"
+            className="lg:hidden bg-[#0A0A0A] border-t border-[#606060]/20 overflow-hidden"
           >
             <div className="px-4 py-8 space-y-6">
               {navItems.map((item) => (
@@ -186,7 +187,7 @@ export function Header() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest"
+                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest cursor-pointer"
                   >
                     {item.label}
                   </button>
