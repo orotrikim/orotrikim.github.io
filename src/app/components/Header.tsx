@@ -8,33 +8,27 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Optimized scroll for mobile and desktop
   const scrollToSection = (id: string) => {
-    // 1. Immediately trigger the menu to close
     setMobileMenuOpen(false);
 
-    // 2. Detection for GitHub Pages HashRouter
     const isHomePage = window.location.hash === "#/" || window.location.hash === "" || window.location.pathname === "/";
 
     if (!isHomePage) {
-      // If we are on a different page (like /team), go home first
       navigate("/");
-      // Wait for the home page to mount and the menu to slide away
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 400); 
+      }, 600); 
     } else {
-      // If already on home, wait briefly for the mobile menu to clear the screen
-      // This prevents the "scroll-cancel" glitch on mobile browsers
+      // The "Mobile Fix" delay: wait for menu to close so the height is correct
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 150);
+      }, 350); 
     }
   };
 
@@ -73,24 +67,10 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* LOGO */}
-          <Link 
-            to="/" 
-            onClick={() => window.scrollTo(0, 0)}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-          >
-            <motion.div 
-              whileHover={{ rotate: 180 }}
-              transition={{ type: "spring", stiffness: 100 }}
-              className="w-16 h-16 flex items-center justify-center" 
-            >
-              <img 
-                src={gearLogo} 
-                alt="Orotrikim Gear" 
-                className="w-full h-full object-contain scale-140"
-              />
+          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <motion.div whileHover={{ rotate: 180 }} transition={{ type: "spring", stiffness: 100 }} className="w-16 h-16 flex items-center justify-center">
+              <img src={gearLogo} alt="Logo" className="w-full h-full object-contain scale-140" />
             </motion.div>
-            
             <div className="flex flex-col">
               <span className="text-[#F7F7F7] font-bold text-xl tracking-tight leading-tight">OROTRIKIM</span>
               <span className="text-[#FFFF00] text-xs font-bold tracking-widest uppercase">#3873</span>
@@ -101,21 +81,12 @@ export function Header() {
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               item.path ? (
-                <Link
-                  key={item.id}
-                  to={item.path}
-                  onClick={() => window.scrollTo(0, 0)}
-                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group"
-                >
+                <Link key={item.id} to={item.path} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group">
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </Link>
               ) : (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group cursor-pointer"
-                >
+                <button key={item.id} onClick={() => scrollToSection(item.id)} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group cursor-pointer bg-transparent border-none">
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </button>
@@ -140,7 +111,6 @@ export function Header() {
                 </motion.a>
               );
             })}
-            
             <motion.a
               href="mailto:orotrikim@gmail.com?subject=I want to join"
               whileHover={{ scale: 1.05 }}
@@ -151,10 +121,7 @@ export function Header() {
             </motion.a>
           </div>
 
-          <button
-            className="lg:hidden text-[#F7F7F7] p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+          <button className="lg:hidden text-[#F7F7F7] p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -175,10 +142,7 @@ export function Header() {
                   <Link
                     key={item.id}
                     to={item.path}
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      window.scrollTo(0, 0);
-                    }}
+                    onClick={() => { setMobileMenuOpen(false); window.scrollTo(0, 0); }}
                     className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest"
                   >
                     {item.label}
@@ -187,13 +151,24 @@ export function Header() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest cursor-pointer"
+                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest cursor-pointer bg-transparent border-none"
                   >
                     {item.label}
                   </button>
                 )
               ))}
               <div className="pt-6 border-t border-[#606060]/20">
+                {/* Social icons in mobile menu for that extra "nice" touch */}
+                <div className="flex gap-6 mb-6">
+                  {socialLinks.map((social, index) => {
+                    const Icon = social.icon;
+                    return (
+                      <a key={index} href={social.href} target="_blank" rel="noopener noreferrer" className="text-[#F7F7F7]/60 hover:text-[#FFFF00]">
+                        <Icon className="w-6 h-6" />
+                      </a>
+                    );
+                  })}
+                </div>
                 <a
                   href="mailto:orotrikim@gmail.com?subject=I want to join"
                   className="block w-full py-4 bg-[#FFFF00] text-black text-center font-bold uppercase tracking-widest rounded-xl"
