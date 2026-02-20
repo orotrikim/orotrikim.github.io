@@ -8,18 +8,32 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Optimized scroll for same-page sections
+  // Optimized scroll for mobile and desktop
   const scrollToSection = (id: string) => {
+    // 1. Close the mobile menu first
     setMobileMenuOpen(false);
-    if (window.location.pathname !== "/") {
+
+    // 2. Check if we are on the home page (works for HashRouter and BrowserRouter)
+    const isHomePage = window.location.pathname === "/" || window.location.hash === "#/";
+
+    if (!isHomePage) {
+      // If not on home, go home first
       navigate("/");
+      // Give the page a moment to load before searching for the ID
       setTimeout(() => {
         const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 300);
     } else {
-      const element = document.getElementById(id);
-      element?.scrollIntoView({ behavior: "smooth" });
+      // If already on home, wait for mobile menu animation to clear
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
     }
   };
 
@@ -58,7 +72,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* LOGO - With Scroll Reset & Zoomed Image */}
+          {/* LOGO */}
           <Link 
             to="/" 
             onClick={() => window.scrollTo(0, 0)}
@@ -72,7 +86,7 @@ export function Header() {
               <img 
                 src={gearLogo} 
                 alt="Orotrikim Gear" 
-                className="w-full h-full object-contain scale-140" // Zoomed 40%
+                className="w-full h-full object-contain scale-140"
               />
             </motion.div>
             
@@ -82,7 +96,7 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation - With Scroll Resets */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               item.path ? (
@@ -145,7 +159,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu - With Scroll Resets */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
