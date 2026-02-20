@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { Github, Instagram, Youtube, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
@@ -7,14 +7,19 @@ import gearLogo from "../../assets/gear.png";
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // The logic that works from any page
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
 
-    const isHomePage = window.location.hash === "#/" || window.location.hash === "" || window.location.pathname === "/";
+    // Detect if we are on home (Works for HashRouter and BrowserRouter)
+    const isHomePage = location.pathname === "/" || location.hash === "#/" || location.hash === "";
 
     if (!isHomePage) {
+      // 1. If we are on /team or /schedule, go home first
       navigate("/");
+      // 2. Wait for the Home Page to actually load into the DOM
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
@@ -22,13 +27,13 @@ export function Header() {
         }
       }, 600); 
     } else {
-      // The "Mobile Fix" delay: wait for menu to close so the height is correct
+      // 3. If already home, wait for mobile menu to clear
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 350); 
+      }, 300);
     }
   };
 
@@ -67,12 +72,26 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <motion.div whileHover={{ rotate: 180 }} transition={{ type: "spring", stiffness: 100 }} className="w-16 h-16 flex items-center justify-center">
-              <img src={gearLogo} alt="Logo" className="w-full h-full object-contain scale-140" />
+          {/* LOGO SECTION */}
+          <Link 
+            to="/" 
+            onClick={() => window.scrollTo(0, 0)}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
+            <motion.div 
+              whileHover={{ rotate: 180 }}
+              transition={{ type: "spring", stiffness: 100 }}
+              className="w-16 h-16 flex items-center justify-center" 
+            >
+              <img 
+                src={gearLogo} 
+                alt="Orotrikim Gear" 
+                className="w-full h-full object-contain scale-140"
+              />
             </motion.div>
+            
             <div className="flex flex-col">
-              <span className="text-[#F7F7F7] font-bold text-xl tracking-tight leading-tight">OROTRIKIM</span>
+              <span className="text-[#F7F7F7] font-bold text-xl tracking-tight leading-tight uppercase">OROTRIKIM</span>
               <span className="text-[#FFFF00] text-xs font-bold tracking-widest uppercase">#3873</span>
             </div>
           </Link>
@@ -81,12 +100,21 @@ export function Header() {
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               item.path ? (
-                <Link key={item.id} to={item.path} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group">
+                <Link
+                  key={item.id}
+                  to={item.path}
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group"
+                >
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </Link>
               ) : (
-                <button key={item.id} onClick={() => scrollToSection(item.id)} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group cursor-pointer bg-transparent border-none">
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group cursor-pointer bg-transparent border-none outline-none"
+                >
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </button>
@@ -94,6 +122,7 @@ export function Header() {
             ))}
           </nav>
 
+          {/* Desktop Socials */}
           <div className="hidden lg:flex items-center gap-4">
             {socialLinks.map((social, index) => {
               const Icon = social.icon;
@@ -111,6 +140,7 @@ export function Header() {
                 </motion.a>
               );
             })}
+            
             <motion.a
               href="mailto:orotrikim@gmail.com?subject=I want to join"
               whileHover={{ scale: 1.05 }}
@@ -121,13 +151,17 @@ export function Header() {
             </motion.a>
           </div>
 
-          <button className="lg:hidden text-[#F7F7F7] p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {/* Mobile Menu Toggle */}
+          <button
+            className="lg:hidden text-[#F7F7F7] p-2 hover:bg-[#606060]/20 rounded-lg transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Panel */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -142,8 +176,11 @@ export function Header() {
                   <Link
                     key={item.id}
                     to={item.path}
-                    onClick={() => { setMobileMenuOpen(false); window.scrollTo(0, 0); }}
-                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest hover:text-[#FFFF00] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -151,15 +188,15 @@ export function Header() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest cursor-pointer bg-transparent border-none"
+                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest hover:text-[#FFFF00] transition-colors bg-transparent border-none outline-none cursor-pointer"
                   >
                     {item.label}
                   </button>
                 )
               ))}
-              <div className="pt-6 border-t border-[#606060]/20">
-                {/* Social icons in mobile menu for that extra "nice" touch */}
-                <div className="flex gap-6 mb-6">
+              
+              <div className="pt-6 border-t border-[#606060]/20 space-y-6">
+                <div className="flex gap-6">
                   {socialLinks.map((social, index) => {
                     const Icon = social.icon;
                     return (
@@ -171,7 +208,7 @@ export function Header() {
                 </div>
                 <a
                   href="mailto:orotrikim@gmail.com?subject=I want to join"
-                  className="block w-full py-4 bg-[#FFFF00] text-black text-center font-bold uppercase tracking-widest rounded-xl"
+                  className="block w-full py-4 bg-[#FFFF00] text-black text-center font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-[#FFFF00]/10"
                 >
                   Join Us
                 </a>
