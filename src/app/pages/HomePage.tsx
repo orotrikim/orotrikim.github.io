@@ -8,11 +8,11 @@ export function HomePage() {
   return (
     <>
       <HeroSection />
+      {/* Wrappers added so the Header can find the sections */}
+      <div id="about"><AboutSection /></div>
       <ThemeSection />
-      <AboutSection />
-      <RobotSection />
-      <SponsorsSection />
-      {/* Both CodeSection and ContactSection are now handled by routes.tsx */}
+      <div id="robot"><RobotSection /></div>
+      <div id="sponsors"><SponsorsSection /></div>
     </>
   );
 }

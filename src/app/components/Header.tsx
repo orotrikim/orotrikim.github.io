@@ -9,31 +9,20 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // The logic that works from any page
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
-
-    // Detect if we are on home (Works for HashRouter and BrowserRouter)
-    const isHomePage = location.pathname === "/" || location.hash === "#/" || location.hash === "";
-
-    if (!isHomePage) {
-      // 1. If we are on /team or /schedule, go home first
+    
+    if (location.pathname !== "/") {
       navigate("/");
-      // 2. Wait for the Home Page to actually load into the DOM
+      // Increased to 500ms: This gives the Home Page time to actually exist 
+      // before the code looks for the ID.
       setTimeout(() => {
         const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 600); 
+        element?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 500);
     } else {
-      // 3. If already home, wait for mobile menu to clear
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 300);
+      const element = document.getElementById(id);
+      element?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -71,50 +60,25 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          
-          {/* LOGO SECTION */}
-          <Link 
-            to="/" 
-            onClick={() => window.scrollTo(0, 0)}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-          >
-            <motion.div 
-              whileHover={{ rotate: 180 }}
-              transition={{ type: "spring", stiffness: 100 }}
-              className="w-16 h-16 flex items-center justify-center" 
-            >
-              <img 
-                src={gearLogo} 
-                alt="Orotrikim Gear" 
-                className="w-full h-full object-contain scale-140"
-              />
+          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-3">
+            <motion.div whileHover={{ rotate: 180 }} className="w-16 h-16 flex items-center justify-center">
+              <img src={gearLogo} alt="Logo" className="w-full h-full object-contain scale-140" />
             </motion.div>
-            
-            <div className="flex flex-col">
-              <span className="text-[#F7F7F7] font-bold text-xl tracking-tight leading-tight uppercase">OROTRIKIM</span>
+            <div className="flex flex-col text-[#F7F7F7]">
+              <span className="font-bold text-xl uppercase tracking-tight">OROTRIKIM</span>
               <span className="text-[#FFFF00] text-xs font-bold tracking-widest uppercase">#3873</span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               item.path ? (
-                <Link
-                  key={item.id}
-                  to={item.path}
-                  onClick={() => window.scrollTo(0, 0)}
-                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group"
-                >
+                <Link key={item.id} to={item.path} onClick={() => window.scrollTo(0, 0)} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] text-sm font-bold uppercase tracking-wider relative group">
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </Link>
               ) : (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-[#F7F7F7]/80 hover:text-[#FFFF00] transition-colors text-sm font-bold uppercase tracking-wider relative group cursor-pointer bg-transparent border-none outline-none"
-                >
+                <button key={item.id} onClick={() => scrollToSection(item.id)} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] text-sm font-bold uppercase tracking-wider relative group bg-transparent border-none cursor-pointer">
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </button>
@@ -122,97 +86,38 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Desktop Socials */}
           <div className="hidden lg:flex items-center gap-4">
             {socialLinks.map((social, index) => {
               const Icon = social.icon;
               return (
-                <motion.a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="text-[#F7F7F7]/60 hover:text-[#FFFF00] transition-colors"
-                  aria-label={social.label}
-                >
+                <motion.a key={index} href={social.href} target="_blank" whileHover={{ scale: 1.1, y: -2 }} className="text-[#F7F7F7]/60 hover:text-[#FFFF00]">
                   <Icon className="w-5 h-5" />
                 </motion.a>
               );
             })}
-            
-            <motion.a
-              href="mailto:orotrikim@gmail.com?subject=I want to join"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="ml-4 px-6 py-2.5 bg-[#FFFF00] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-[#FFFF00]/90 transition-all shadow-lg shadow-[#FFFF00]/20"
-            >
-              Join Us
-            </motion.a>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            className="lg:hidden text-[#F7F7F7] p-2 hover:bg-[#606060]/20 rounded-lg transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+          <button className="lg:hidden text-[#F7F7F7] p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Panel */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-[#0A0A0A] border-t border-[#606060]/20 overflow-hidden"
-          >
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="lg:hidden bg-[#0A0A0A] border-t border-[#606060]/20">
             <div className="px-4 py-8 space-y-6">
               {navItems.map((item) => (
                 item.path ? (
-                  <Link
-                    key={item.id}
-                    to={item.path}
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      window.scrollTo(0, 0);
-                    }}
-                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest hover:text-[#FFFF00] transition-colors"
-                  >
+                  <Link key={item.id} to={item.path} onClick={() => { setMobileMenuOpen(false); window.scrollTo(0, 0); }} className="block text-[#F7F7F7] text-lg font-bold uppercase">
                     {item.label}
                   </Link>
                 ) : (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase tracking-widest hover:text-[#FFFF00] transition-colors bg-transparent border-none outline-none cursor-pointer"
-                  >
+                  <button key={item.id} onClick={() => scrollToSection(item.id)} className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase bg-transparent border-none">
                     {item.label}
                   </button>
                 )
               ))}
-              
-              <div className="pt-6 border-t border-[#606060]/20 space-y-6">
-                <div className="flex gap-6">
-                  {socialLinks.map((social, index) => {
-                    const Icon = social.icon;
-                    return (
-                      <a key={index} href={social.href} target="_blank" rel="noopener noreferrer" className="text-[#F7F7F7]/60 hover:text-[#FFFF00]">
-                        <Icon className="w-6 h-6" />
-                      </a>
-                    );
-                  })}
-                </div>
-                <a
-                  href="mailto:orotrikim@gmail.com?subject=I want to join"
-                  className="block w-full py-4 bg-[#FFFF00] text-black text-center font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-[#FFFF00]/10"
-                >
-                  Join Us
-                </a>
-              </div>
             </div>
           </motion.div>
         )}
