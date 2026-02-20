@@ -1,4 +1,4 @@
-import { Link } from "react-router"; // 1. Added Link import
+import { Link } from "react-router";
 import { motion, useMotionValue, useSpring, useMotionTemplate } from "motion/react";
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
@@ -30,27 +30,24 @@ export function HeroSection() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
-  const scrollToAbout = () => {
-    const element = document.getElementById("about");
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // 2. Added explicit scroll function for the "Our Robot" button
-  const scrollToRobot = () => {
-    const element = document.getElementById("robot");
-    element?.scrollIntoView({ behavior: "smooth" });
+  // Unified scroll function to handle section jumps safely
+  const scrollToId = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0A0A0A] via-[#0F0F0F] to-[#0A0A0A]">
       
-      {/* Fixed Mouse Glow */}
+      {/* Interactive Mouse Glow */}
       <motion.div
         className="pointer-events-none absolute inset-0 z-0"
         style={{ background: backgroundSpotlight }}
       />
 
-      {/* Grid Pattern */}
+      {/* Background Grid */}
       <div 
         className="absolute inset-0 opacity-5 pointer-events-none"
         style={{
@@ -59,14 +56,14 @@ export function HeroSection() {
         }}
       ></div>
 
-      {/* Content */}
+      {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          {/* Team Name */}
+          {/* Logo/Team Name */}
           <h1 className="text-6xl sm:text-8xl md:text-9xl font-bold mb-4 tracking-tight">
             <span className="text-[#606060]">OR</span>
             <span className="bg-gradient-to-r from-[#606060] via-[#FFFF00] to-[#FFFF00] bg-clip-text text-transparent">
@@ -80,28 +77,28 @@ export function HeroSection() {
           </motion.p>
 
           <motion.p className="text-lg text-[#F7F7F7]/80 max-w-2xl mx-auto mb-12 leading-relaxed">
-            We are a passionate group of Middle School Students from Elkana in Israel looking to expand on our Knowledge of robotics through First Lego League.
+            We are a passionate group of Middle School Students from Elkana in Israel looking to expand on our knowledge of robotics through FIRST Lego League.
             We are competing in the 2025-2026 Unearthed Season and are excited to share our journey with you!
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            {/* 3. Changed from <a> to <button> for internal scrolling */}
+            {/* Robot Scroll Button */}
             <motion.button
-              onClick={scrollToRobot}
+              onClick={() => scrollToId("robot")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-[#FFFF00] text-black font-semibold rounded-lg hover:bg-[#FFFF00]/90 transition-all shadow-lg shadow-[#FFFF00]/20 uppercase tracking-wider cursor-pointer"
+              className="px-8 py-4 bg-[#FFFF00] text-black font-semibold rounded-lg hover:bg-[#FFFF00]/90 transition-all shadow-lg shadow-[#FFFF00]/20 uppercase tracking-wider cursor-pointer border-none"
             >
               Our Robot
             </motion.button>
 
-            {/* 4. Swapped standard <a> for React Router <Link> */}
-            <Link to="/team">
+            {/* Team Page Link */}
+            <Link to="/team" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-transparent text-[#F7F7F7] font-semibold rounded-lg border-2 border-[#606060] hover:border-[#FFFF00] hover:text-[#FFFF00] transition-all uppercase tracking-wider w-full sm:w-auto"
+                className="w-full px-8 py-4 bg-transparent text-[#F7F7F7] font-semibold rounded-lg border-2 border-[#606060] hover:border-[#FFFF00] hover:text-[#FFFF00] transition-all uppercase tracking-wider cursor-pointer"
               >
                 Meet the Team
               </motion.button>
@@ -109,10 +106,10 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Scroll Indicator */}
+        {/* Floating Down Arrow */}
         <motion.button
-          onClick={scrollToAbout}
-          className="absolute -bottom-20 left-1/2 -translate-x-1/2 text-[#F7F7F7]/40 hover:text-[#FFFF00] transition-colors"
+          onClick={() => scrollToId("about")}
+          className="absolute -bottom-20 left-1/2 -translate-x-1/2 text-[#F7F7F7]/40 hover:text-[#FFFF00] transition-colors cursor-pointer bg-transparent border-none"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}

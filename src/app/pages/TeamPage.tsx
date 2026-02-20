@@ -7,7 +7,6 @@ export default function TeamPage() {
 
   const teamMembers = [
     { name: "Mordy Yeger", role: "Lead for Engineering & Programming", icon: Code },
-    { name: "Hannah Yeger", role: "Engineer & Team Treasurer", icon: Wrench },
     { name: "Dvir Firerizen", role: "Engineer & Team Treasurer", icon: Wrench },
     { name: "Yair Vice", role: "Lead for Core Values, Community", icon: Heart },
     { name: "Talya Basch", role: "Core Values, Community", icon: Heart },
@@ -15,11 +14,13 @@ export default function TeamPage() {
     { name: "Rut Machluf", role: "Engineering", icon: Wrench },
     { name: "Or Hannah Goren", role: "Engineering", icon: Wrench },
     { name: "Tehila Ornestein", role: "Programming", icon: Code },
-    { name: "Shoam Plach", role: "Research", icon: Presentation },
-    { name: "Tiferet Kim", role: "Community", icon: Heart },
+    { name: "Shoam Falach", role: "Research", icon: Presentation },
+    { name: "Tiferet Kayam", role: "Community", icon: Heart },
     { name: "Achiya Sterman", role: "Robot & Engineering", icon: Wrench },
     { name: "Shuvael Odes", role: "Robot & Engineering", icon: Wrench },
     { name: "Avital Agiv", role: "Research", icon: Presentation },
+    { name: "Neta Pelie", role: "Engineering, Programming", icon: Wrench },
+    { name: "Talya Shukron", role: "Research", icon: Presentation },
   ];
 
   const mentors = [
