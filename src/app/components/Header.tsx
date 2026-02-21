@@ -9,20 +9,53 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // --- PREMIUM SCROLL ENGINE ---
+  // Duration is in ms (1200 = 1.2 seconds of smooth gliding)
+  const premiumScroll = (targetY: number, duration: number = 1200) => {
+    const startY = window.pageYOffset;
+    const diff = targetY - startY;
+    let startTime: number | null = null;
+
+    const animation = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+
+      // EaseInOutCubic Formula: The "Premium" curve
+      const ease = progress < 0.5 
+        ? 4 * progress * progress * progress 
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      window.scrollTo(0, startY + diff * ease);
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animation);
+      }
+    };
+    requestAnimationFrame(animation);
+  };
+
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
-    
-    if (location.pathname !== "/") {
+    const isHomePage = location.pathname === "/";
+
+    if (!isHomePage) {
+      // If we are on another page, go home first
       navigate("/");
-      // Increased to 500ms: This gives the Home Page time to actually exist 
-      // before the code looks for the ID.
       setTimeout(() => {
         const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 500);
+        if (element) {
+          const target = element.getBoundingClientRect().top + window.pageYOffset;
+          premiumScroll(target, 1500); // Slightly slower when switching pages
+        }
+      }, 550);
     } else {
+      // If already home, glide to the section
       const element = document.getElementById(id);
-      element?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (element) {
+        const target = element.getBoundingClientRect().top + window.pageYOffset;
+        premiumScroll(target, 1200);
+      }
     }
   };
 
@@ -60,15 +93,31 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-3">
-            <motion.div whileHover={{ rotate: 180 }} className="w-16 h-16 flex items-center justify-center">
+          
+          {/* GEAR LOGO - Custom Home Scroller */}
+          <div 
+            onClick={() => {
+              if (location.pathname === "/") {
+                premiumScroll(0, 1000); // 1s smooth glide to top
+              } else {
+                navigate("/");
+                window.scrollTo(0, 0);
+              }
+            }}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <motion.div 
+              whileHover={{ rotate: 180 }} 
+              transition={{ type: "spring", stiffness: 100 }} 
+              className="w-16 h-16 flex items-center justify-center"
+            >
               <img src={gearLogo} alt="Logo" className="w-full h-full object-contain scale-140" />
             </motion.div>
             <div className="flex flex-col text-[#F7F7F7]">
-              <span className="font-bold text-xl uppercase tracking-tight">OROTRIKIM</span>
+              <span className="font-bold text-xl uppercase tracking-tight leading-tight">OROTRIKIM</span>
               <span className="text-[#FFFF00] text-xs font-bold tracking-widest uppercase">#3873</span>
             </div>
-          </Link>
+          </div>
 
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
@@ -78,7 +127,7 @@ export function Header() {
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </Link>
               ) : (
-                <button key={item.id} onClick={() => scrollToSection(item.id)} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] text-sm font-bold uppercase tracking-wider relative group bg-transparent border-none cursor-pointer">
+                <button key={item.id} type="button" onClick={() => scrollToSection(item.id)} className="text-[#F7F7F7]/80 hover:text-[#FFFF00] text-sm font-bold uppercase tracking-wider relative group bg-transparent border-none cursor-pointer outline-none">
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
                 </button>
@@ -90,11 +139,14 @@ export function Header() {
             {socialLinks.map((social, index) => {
               const Icon = social.icon;
               return (
-                <motion.a key={index} href={social.href} target="_blank" whileHover={{ scale: 1.1, y: -2 }} className="text-[#F7F7F7]/60 hover:text-[#FFFF00]">
+                <motion.a key={index} href={social.href} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1, y: -2 }} className="text-[#F7F7F7]/60 hover:text-[#FFFF00]">
                   <Icon className="w-5 h-5" />
                 </motion.a>
               );
             })}
+            <motion.a href="mailto:orotrikim@gmail.com" whileHover={{ scale: 1.05 }} className="ml-4 px-6 py-2.5 bg-[#FFFF00] text-black font-bold text-xs uppercase tracking-widest rounded-lg">
+              Join Us
+            </motion.a>
           </div>
 
           <button className="lg:hidden text-[#F7F7F7] p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -113,7 +165,7 @@ export function Header() {
                     {item.label}
                   </Link>
                 ) : (
-                  <button key={item.id} onClick={() => scrollToSection(item.id)} className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase bg-transparent border-none">
+                  <button key={item.id} type="button" onClick={() => scrollToSection(item.id)} className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase bg-transparent border-none">
                     {item.label}
                   </button>
                 )
