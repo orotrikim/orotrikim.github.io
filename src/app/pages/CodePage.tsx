@@ -10,11 +10,13 @@ export default function CodePage() {
       name: "Robot-2026-Unearthed",
       description: "Robot Code for the 2026 Unearthed Season",
       language: "Python",
+      link: "https://github.com/orotrikim/Robot-2026-Unearthed"
     },
     {
       name: "Website Code",
       description: "Website source code",
       language: "React",
+      link: "https://github.com/orotrikim/orotrikim.github.io"
     },
   ];
 
@@ -60,7 +62,7 @@ export default function CodePage() {
               {repositories.map((repo, index) => (
                 <motion.a
                   key={index}
-                  href="https://github.com/orotrikim/Robot-2026-Unearthed"
+                  href={repo.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, y: 20 }}
