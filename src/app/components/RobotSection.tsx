@@ -2,26 +2,36 @@ import { motion, AnimatePresence } from "motion/react";
 import { useInView } from "./hooks/useInView";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Cpu, Zap, Brain, Settings, Image as ImageIcon, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import RobotImage from "../../assets/robot.png"; 
 
-// 1. FIX THE PATH: Ensure this points exactly to your folder from THIS file
-const imageModules = import.meta.glob("../RobotGallery/*.{png,jpg,jpeg,webp,PNG,JPG}", { eager: true });
-const galleryImages = Object.values(imageModules).map((mod: any) => mod.default);
+/** * VITE GLOB IMPORT
+ * Pulls everything from RobotGallery. 
+ * Includes uppercase JPG/PNG just in case.
+ */
+const imageModules = import.meta.glob("../RobotGallery/*.{JPG,jpg,png,PNG,jpeg,JPEG}", { eager: true });
 
-// Debugging: Check your console (F12) to see if images are being caught
-console.log("Gallery Assets Found:", galleryImages);
+// Convert the object into an array of usable URLs
+const galleryImages = Object.values(imageModules).map((mod: any) => {
+  return typeof mod === 'string' ? mod : mod.default;
+});
 
 export function RobotSection() {
   const { ref, isInView } = useInView();
   const [showGallery, setShowGallery] = useState(false);
 
+  // LOG FOR DEBUGGING - Open browser console (F12) to see this
+  useEffect(() => {
+    console.log("Gallery initialized. Images found:", galleryImages.length);
+    console.log("Image Paths:", galleryImages);
+  }, []);
+
   const features = [
     { icon: Cpu, title: "Advanced Processing", description: "Powered by Spike Prime with Pybricks Custom Firmware." },
-    { icon: Zap, title: "Double Motors", description: "2 Large Motors for the Drive base and 2 Medium Motors for attachments." },
-    { icon: Brain, title: "Smart Sensors", description: "2 Light sensors for line following and color detection." },
-    { icon: Settings, title: "Modular Design", description: "Quick-swap attachments optimized for the 2.5 minute round." },
+    { icon: Zap, title: "Double Motors", description: "2 Large Motors for drive base power and 2 Medium Motors for attachments." },
+    { icon: Brain, title: "Smart Sensors", description: "Dual light sensors for precise line following and detection." },
+    { icon: Settings, title: "Modular Design", description: "Quick-swap attachment system optimized for speed." },
   ];
 
   return (
@@ -80,6 +90,7 @@ export function RobotSection() {
           </div>
         </div>
 
+        {/* --- FULL GALLERY MODAL --- */}
         <AnimatePresence>
           {showGallery && (
             <motion.div
@@ -100,7 +111,7 @@ export function RobotSection() {
               >
                 <div className="flex justify-between items-center mb-8 sticky top-0 bg-[#0F0F0F] py-2 z-10">
                   <h3 className="text-2xl font-bold text-[#F7F7F7] tracking-tighter uppercase">
-                    Robot <span className="text-[#FFFF00]">Gallery</span>
+                    Robot <span className="text-[#FFFF00]">Asset Gallery</span>
                   </h3>
                   <button onClick={() => setShowGallery(false)} className="hover:text-[#FFFF00] cursor-pointer">
                     <X className="w-8 h-8" />
@@ -109,12 +120,15 @@ export function RobotSection() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {galleryImages.length > 0 ? (
-                    galleryImages.map((img: any, i) => (
+                    galleryImages.map((imgUrl, i) => (
                       <div key={i} className="aspect-square rounded-xl overflow-hidden border-2 border-[#606060]/20 bg-[#050505]">
                         <img 
-                          src={img} 
-                          alt={`Asset ${i}`} 
+                          src={imgUrl} 
+                          alt={`Robot Asset ${i}`} 
                           className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400?text=Image+Not+Found';
+                          }}
                         />
                       </div>
                     ))
@@ -132,6 +146,7 @@ export function RobotSection() {
         </AnimatePresence>
       </div>
 
+      {/* Bottom Divider */}
       <div className="absolute bottom-0 w-full h-px bg-[#606060]/30" />
     </section>
   );
