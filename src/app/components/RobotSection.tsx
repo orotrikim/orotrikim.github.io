@@ -80,7 +80,7 @@ export function RobotSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute top-4 right-4 px-4 py-2 bg-[#FFFF00] text-black font-bold text-xs rounded-full shadow-xl">
-                2024 DESIGN
+                2026 DESIGN
               </div>
             </div>
             
