@@ -50,7 +50,7 @@ export function RobotSection() {
     <section id="robot" ref={ref} className="relative py-24 bg-[#0A0A0A] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
+        {/* Section Header - Yellow Line Removed */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -60,7 +60,6 @@ export function RobotSection() {
           <h2 className="text-4xl sm:text-5xl font-bold text-[#F7F7F7] mb-6 uppercase tracking-tighter">
             Meet Our <span className="text-[#FFFF00]">Robot</span>
           </h2>
-          <div className="w-24 h-1 bg-[#FFFF00] mx-auto rounded-full" />
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -131,11 +130,10 @@ export function RobotSection() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                /* Changed to flex-col and fixed height to allow internal scrolling */
                 className="max-w-6xl w-full h-[85vh] flex flex-col bg-[#0F0F0F] rounded-3xl border border-[#606060]/30 shadow-2xl relative overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* STATIC HEADER: Stays at the top */}
+                {/* STATIC HEADER */}
                 <div className="flex justify-between items-center p-6 sm:p-8 border-b border-[#606060]/20 bg-[#0F0F0F] z-10">
                   <h3 className="text-2xl font-bold text-[#F7F7F7] uppercase tracking-tighter">
                     Robot <span className="text-[#FFFF00]">Technical Gallery</span>
@@ -145,7 +143,7 @@ export function RobotSection() {
                   </button>
                 </div>
 
-                {/* SCROLLABLE CONTENT: Only this part moves */}
+                {/* SCROLLABLE CONTENT */}
                 <div className="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {galleryImages.map((imgSrc, i) => (
