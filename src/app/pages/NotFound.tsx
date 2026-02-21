@@ -30,14 +30,15 @@ export default function NotFound() {
           <motion.div
             animate={isInView ? { 
               // 0 = Default Color, 1 = Yellow Color
-              opacity: [0, 0, 1, 0, 1, 0] 
+              opacity: [0, 1, 0, 1, 0] 
             } : {}}
             transition={{ 
               duration: 4, 
               repeat: Infinity, 
               times: [0, 0.7, 0.71, 0.75, 0.76, 1],
+              type: "just",
             }}
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset- w-full h-full"
           >
             <img 
               src={gearLogo} 
@@ -62,7 +63,7 @@ export default function NotFound() {
             onClick={handleReturn}
             className="px-10 py-3 border border-[#FFFF00] text-[#FFFF00] font-bold uppercase hover:bg-[#FFFF00] hover:text-black transition-none cursor-pointer"
           >
-            Home
+            Return
           </button>
         </div>
       </div>
