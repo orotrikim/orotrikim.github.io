@@ -6,6 +6,7 @@ import ContactPage from "./pages/ContactPage";
 import TeamPage from "./pages/TeamPage";
 import CodePage from "./pages/CodePage";
 import NotFound from "./pages/NotFound"; // Import without {} since we used export default
+import RobotGallery from "./pages/RobotGallery";
 
 export const router = createHashRouter([
   {
@@ -21,6 +22,7 @@ export const router = createHashRouter([
       { path: "contact", element: <ContactPage /> },
       // This catches missing paths inside the hash system
       { path: "*", element: <NotFound /> }, 
+      { path: "gallery", element: <RobotGallery /> }
     ],
   },
 ]);
