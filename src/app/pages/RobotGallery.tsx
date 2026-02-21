@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 
 // --- THE SPONSOR METHOD (Direct from Assets) ---
 // Removed the "RobotGallery/" part of the path
-import img1 from "../../assets/_1102684.png";
-import img2 from "../../assets/_1102688.png";
-import img3 from "../../assets/_1102692.png";
-import img4 from "../../assets/_1102698.png";
-import img5 from "../../assets/_1102702.png";
-import img6 from "../../assets/_1102705.png";
-import img7 from "../../assets/_1102709.png";
-import img8 from "../../assets/_1102711.png";
+import img1 from "../../assets/Working.png";
+import img2 from "../../assets/TalkingCrane.png";
+import img3 from "../../assets/SwitchingAgain.png";
+import img4 from "../../assets/Switching.png";
+import img5 from "../../assets/RobotHold.png";
+import img6 from "../../assets/Judging.png";
+import img7 from "../../assets/Holding.png";
+import img8 from "../../assets/CraneOnRobot.png";
 
 export default function GalleryPage() {
   const photos = [img1, img2, img3, img4, img5, img6, img7, img8];
