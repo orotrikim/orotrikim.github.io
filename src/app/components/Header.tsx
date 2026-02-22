@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router";
-import { Github, Instagram, Youtube, Menu, X } from "lucide-react";
+import { Github, Instagram, Youtube, Menu, X, Mail } from "lucide-react"; // Added Mail icon
 import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import gearLogo from "../../assets/gear.png"; 
@@ -10,7 +10,6 @@ export function Header() {
   const location = useLocation();
 
   // --- PREMIUM SCROLL ENGINE ---
-  // Duration is in ms (1200 = 1.2 seconds of smooth gliding)
   const premiumScroll = (targetY: number, duration: number = 1200) => {
     const startY = window.pageYOffset;
     const diff = targetY - startY;
@@ -21,7 +20,6 @@ export function Header() {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
-      // EaseInOutCubic Formula: The "Premium" curve
       const ease = progress < 0.5 
         ? 4 * progress * progress * progress 
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
@@ -40,17 +38,15 @@ export function Header() {
     const isHomePage = location.pathname === "/";
 
     if (!isHomePage) {
-      // If we are on another page, go home first
       navigate("/");
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           const target = element.getBoundingClientRect().top + window.pageYOffset;
-          premiumScroll(target, 1500); // Slightly slower when switching pages
+          premiumScroll(target, 1500);
         }
       }, 550);
     } else {
-      // If already home, glide to the section
       const element = document.getElementById(id);
       if (element) {
         const target = element.getBoundingClientRect().top + window.pageYOffset;
@@ -94,11 +90,10 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* GEAR LOGO - Custom Home Scroller */}
           <div 
             onClick={() => {
               if (location.pathname === "/") {
-                premiumScroll(0, 1000); // 1s smooth glide to top
+                premiumScroll(0, 1000);
               } else {
                 navigate("/");
                 window.scrollTo(0, 0);
@@ -157,19 +152,52 @@ export function Header() {
 
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="lg:hidden bg-[#0A0A0A] border-t border-[#606060]/20">
-            <div className="px-4 py-8 space-y-6">
-              {navItems.map((item) => (
-                item.path ? (
-                  <Link key={item.id} to={item.path} onClick={() => { setMobileMenuOpen(false); window.scrollTo(0, 0); }} className="block text-[#F7F7F7] text-lg font-bold uppercase">
-                    {item.label}
-                  </Link>
-                ) : (
-                  <button key={item.id} type="button" onClick={() => scrollToSection(item.id)} className="block w-full text-left text-[#F7F7F7] text-lg font-bold uppercase bg-transparent border-none">
-                    {item.label}
-                  </button>
-                )
-              ))}
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }} 
+            animate={{ opacity: 1, height: "auto" }} 
+            exit={{ opacity: 0, height: 0 }} 
+            className="lg:hidden bg-[#0A0A0A] border-t border-[#606060]/20 overflow-hidden"
+          >
+            <div className="px-6 py-10 flex flex-col gap-8">
+              {/* Navigation Links */}
+              <div className="flex flex-col gap-6">
+                {navItems.map((item) => (
+                  item.path ? (
+                    <Link key={item.id} to={item.path} onClick={() => { setMobileMenuOpen(false); window.scrollTo(0, 0); }} className="text-[#F7F7F7] text-2xl font-bold uppercase tracking-tighter hover:text-[#FFFF00] transition-colors">
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <button key={item.id} type="button" onClick={() => scrollToSection(item.id)} className="text-left text-[#F7F7F7] text-2xl font-bold uppercase tracking-tighter hover:text-[#FFFF00] transition-colors bg-transparent border-none">
+                      {item.label}
+                    </button>
+                  )
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="h-px w-full bg-[#606060]/20" />
+
+              {/* Mobile Socials & Join Button */}
+              <div className="flex flex-col gap-8">
+                <div className="flex items-center gap-6">
+                  {socialLinks.map((social, index) => {
+                    const Icon = social.icon;
+                    return (
+                      <a key={index} href={social.href} target="_blank" rel="noopener noreferrer" className="text-[#F7F7F7]/60 hover:text-[#FFFF00] transition-colors">
+                        <Icon className="w-7 h-7" />
+                      </a>
+                    );
+                  })}
+                </div>
+
+                <a 
+                  href="mailto:orotrikim@gmail.com" 
+                  className="w-full py-4 bg-[#FFFF00] text-black font-extrabold text-sm uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  Join Our Team
+                </a>
+              </div>
             </div>
           </motion.div>
         )}
