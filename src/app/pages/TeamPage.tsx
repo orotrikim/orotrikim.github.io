@@ -8,7 +8,7 @@ export default function TeamPage() {
   const teamMembers = [
     { name: "Mordy Yeger", role: "Lead for Engineering & Programming", icon: Code },
     { name: "Dvir Firerizen", role: "Engineer & Team Treasurer", icon: Wrench },
-    { name: "Yair Vice", role: "Lead for Core Values, Community", icon: Heart },
+    { name: "Yair Weiss", role: "Lead for Core Values, Community", icon: Heart },
     { name: "Talya Basch", role: "Core Values, Community", icon: Heart },
     { name: "Shilat Dei", role: "Programming, Engineering", icon: Wrench },
     { name: "Rut Machluf", role: "Engineering", icon: Wrench },
