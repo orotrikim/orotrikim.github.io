@@ -11,12 +11,14 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Helper to trigger Google Translate
+  // --- THE TRANSLATION TRIGGER ---
   const changeLanguage = (lang: string) => {
     const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (selectElement) {
       selectElement.value = lang;
-      selectElement.dispatchEvent(new Event('change'));
+      selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      console.error("Google Translate not ready. Try again in a second.");
     }
   };
 
@@ -237,7 +239,7 @@ export function Header() {
           >
             <div className="flex flex-col h-full gap-8 overflow-y-auto">
               
-              {/* Mobile Language Selection */}
+              {/* Mobile Language Toggle */}
               <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
                 <Languages className="w-5 h-5 text-[#FFFF00]" />
                 <div className="flex gap-4">
