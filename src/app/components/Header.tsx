@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router";
-import { Github, Instagram, Youtube, Menu, X, Mail, ChevronDown, Lock, Languages } from "lucide-react";
+import { Github, Instagram, Youtube, Menu, X, ChevronDown, Lock, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
 import gearLogo from "../../assets/gear.png"; 
@@ -11,14 +11,15 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // --- THE TRANSLATION TRIGGER ---
+  // --- THE REDIRECT TRANSLATION ENGINE ---
+  // Since the widget is blocked, we send the user to the Google Proxy version
   const changeLanguage = (lang: string) => {
-    const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (selectElement) {
-      selectElement.value = lang;
-      selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+    if (lang === 'en') {
+      // Go to your actual domain
+      window.location.href = "http://localhost:5173"; // Change this to your real URL when you deploy
     } else {
-      console.error("Google Translate not ready. Try again in a second.");
+      const currentUrl = window.location.href;
+      window.location.href = `https://translate.google.com/translate?sl=en&tl=${lang}&u=${encodeURIComponent(currentUrl)}`;
     }
   };
 
@@ -33,7 +34,7 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // --- PREMIUM SCROLL ENGINE ---
+  // --- THE PREMIUM SCROLL ENGINE ---
   const premiumScroll = (targetY: number, duration: number = 1200) => {
     const startY = window.pageYOffset;
     const diff = targetY - startY;
@@ -44,9 +45,10 @@ export function Header() {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
+      // Quintic Easing for that "Premium" feel
       const ease = progress < 0.5 
-        ? 4 * progress * progress * progress 
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        ? 16 * progress * progress * progress * progress * progress 
+        : 1 - Math.pow(-2 * progress + 2, 5) / 2;
 
       window.scrollTo(0, startY + diff * ease);
       if (timeElapsed < duration) requestAnimationFrame(animation);
@@ -113,6 +115,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
+          {/* LOGO SECTION */}
           <div 
             onClick={() => {
               if (location.pathname === "/") {
@@ -133,6 +136,7 @@ export function Header() {
             </div>
           </div>
 
+          {/* MAIN NAV */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             <div className="relative" ref={dropdownRef}>
               <button 
@@ -188,7 +192,7 @@ export function Header() {
               </Link>
             ))}
 
-            {/* Desktop Language Selector */}
+            {/* Language Switcher Buttons */}
             <div className="flex items-center gap-2 border-l border-white/10 pl-6 ml-2 h-6">
               <button 
                 onClick={() => changeLanguage('en')}
@@ -206,6 +210,7 @@ export function Header() {
             </div>
           </nav>
 
+          {/* SOCIALS & CTA */}
           <div className="hidden lg:flex items-center gap-6">
             <div className="flex items-center gap-4 border-r border-[#606060]/20 pr-6">
               {socialLinks.map((social, i) => (
@@ -217,18 +222,20 @@ export function Header() {
             <motion.a 
               href="mailto:orotrikim@gmail.com" 
               whileHover={{ scale: 1.05 }}
-              className="px-5 py-2.5 bg-[#FFFF00] text-black font-bold text-[11px] uppercase tracking-widest rounded-lg transition-transform"
+              className="px-5 py-2.5 bg-[#FFFF00] text-black font-bold text-[11px] uppercase tracking-widest rounded-lg transition-transform shadow-[0_0_15px_rgba(255,255,0,0.3)]"
             >
               Join Us
             </motion.a>
           </div>
 
+          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-[#F7F7F7] p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div 
@@ -239,13 +246,12 @@ export function Header() {
           >
             <div className="flex flex-col h-full gap-8 overflow-y-auto">
               
-              {/* Mobile Language Toggle */}
               <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
                 <Languages className="w-5 h-5 text-[#FFFF00]" />
                 <div className="flex gap-4">
-                  <button onClick={() => { changeLanguage('en'); setMobileMenuOpen(false); }} className="text-[#F7F7F7] font-black text-sm uppercase">English</button>
+                  <button onClick={() => changeLanguage('en')} className="text-[#F7F7F7] font-black text-sm uppercase">English</button>
                   <span className="text-white/20">|</span>
-                  <button onClick={() => { changeLanguage('he'); setMobileMenuOpen(false); }} className="text-[#F7F7F7] font-black text-sm uppercase">עברית</button>
+                  <button onClick={() => changeLanguage('he')} className="text-[#F7F7F7] font-black text-sm uppercase">עברית</button>
                 </div>
               </div>
 
