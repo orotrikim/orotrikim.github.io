@@ -11,15 +11,16 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // --- THE REDIRECT TRANSLATION ENGINE ---
-  // Since the widget is blocked, we send the user to the Google Proxy version
+  // --- THE FULL TRANSLATION & REVERSAL ENGINE ---
   const changeLanguage = (lang: string) => {
-    if (lang === 'en') {
-      // Go to your actual domain
-      window.location.href = "http://localhost:5173"; // Change this to your real URL when you deploy
-    } else {
-      const currentUrl = window.location.href;
-      window.location.href = `https://translate.google.com/translate?sl=en&tl=${lang}&u=${encodeURIComponent(currentUrl)}`;
+    // 1. Reverse the layout direction
+    document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
+
+    // 2. Trigger Google Translate internal combo box
+    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (select) {
+      select.value = lang;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
     }
   };
 
@@ -34,7 +35,7 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // --- THE PREMIUM SCROLL ENGINE ---
+  // --- PREMIUM SCROLL ENGINE ---
   const premiumScroll = (targetY: number, duration: number = 1200) => {
     const startY = window.pageYOffset;
     const diff = targetY - startY;
@@ -45,7 +46,7 @@ export function Header() {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
-      // Quintic Easing for that "Premium" feel
+      // Quintic Easing for that "High-End" feel
       const ease = progress < 0.5 
         ? 16 * progress * progress * progress * progress * progress 
         : 1 - Math.pow(-2 * progress + 2, 5) / 2;
@@ -115,28 +116,21 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* LOGO SECTION */}
+          {/* BRANDING WITH PROTECTED NAME */}
           <div 
-            onClick={() => {
-              if (location.pathname === "/") {
-                premiumScroll(0, 1000);
-              } else {
-                navigate("/");
-                window.scrollTo(0, 0);
-              }
-            }}
+            onClick={() => location.pathname === "/" ? premiumScroll(0, 1000) : (navigate("/"), window.scrollTo(0, 0))}
             className="flex items-center gap-3 cursor-pointer flex-shrink-0"
           >
             <motion.div whileHover={{ rotate: 180 }} className="w-10 h-10">
               <img src={gearLogo} alt="Logo" className="w-full h-full object-contain scale-150" />
             </motion.div>
             <div className="flex flex-col text-[#F7F7F7]">
-              <span className="font-bold text-lg tracking-tight leading-tight uppercase">OROTRIKIM</span>
-              <span className="text-[#FFFF00] text-[10px] font-bold tracking-widest uppercase">#3873</span>
+              <span className="font-bold text-lg tracking-tight leading-tight uppercase notranslate">OROTRIKIM</span>
+              <span className="text-[#FFFF00] text-[10px] font-bold tracking-widest uppercase notranslate">#3873</span>
             </div>
           </div>
 
-          {/* MAIN NAV */}
+          {/* DESKTOP NAVIGATION */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             <div className="relative" ref={dropdownRef}>
               <button 
@@ -167,12 +161,8 @@ export function Header() {
                     </div>
                     <div className="h-px bg-[#606060]/20 w-full" />
                     <div className="bg-[#1A1A1A]/50 py-1">
-                      <a 
-                        href="/admin/" 
-                        className="flex items-center gap-3 px-5 py-4 text-[11px] font-black uppercase text-[#FFFF00] hover:bg-[#FFFF00] hover:text-black transition-all group"
-                      >
-                        <Lock className="w-3.5 h-3.5" />
-                        Team Portal
+                      <a href="/admin/" className="flex items-center gap-3 px-5 py-4 text-[11px] font-black uppercase text-[#FFFF00] hover:bg-[#FFFF00] hover:text-black transition-all">
+                        <Lock className="w-3.5 h-3.5" /> Team Portal
                       </a>
                     </div>
                   </motion.div>
@@ -192,25 +182,15 @@ export function Header() {
               </Link>
             ))}
 
-            {/* Language Switcher Buttons */}
+            {/* Language Switcher UI */}
             <div className="flex items-center gap-2 border-l border-white/10 pl-6 ml-2 h-6">
-              <button 
-                onClick={() => changeLanguage('en')}
-                className="text-[11px] font-black text-white/40 hover:text-[#FFFF00] transition-colors uppercase"
-              >
-                EN
-              </button>
+              <button onClick={() => changeLanguage('en')} className="text-[11px] font-black text-white/40 hover:text-[#FFFF00] transition-colors uppercase cursor-pointer">EN</button>
               <span className="text-white/10 text-[10px]">/</span>
-              <button 
-                onClick={() => changeLanguage('he')}
-                className="text-[11px] font-black text-white/40 hover:text-[#FFFF00] transition-colors uppercase"
-              >
-                HE
-              </button>
+              <button onClick={() => changeLanguage('he')} className="text-[11px] font-black text-white/40 hover:text-[#FFFF00] transition-colors uppercase cursor-pointer">HE</button>
             </div>
           </nav>
 
-          {/* SOCIALS & CTA */}
+          {/* ACTIONS & SOCIALS */}
           <div className="hidden lg:flex items-center gap-6">
             <div className="flex items-center gap-4 border-r border-[#606060]/20 pr-6">
               {socialLinks.map((social, i) => (
@@ -228,7 +208,6 @@ export function Header() {
             </motion.a>
           </div>
 
-          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-[#F7F7F7] p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -249,9 +228,9 @@ export function Header() {
               <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
                 <Languages className="w-5 h-5 text-[#FFFF00]" />
                 <div className="flex gap-4">
-                  <button onClick={() => changeLanguage('en')} className="text-[#F7F7F7] font-black text-sm uppercase">English</button>
+                  <button onClick={() => { changeLanguage('en'); setMobileMenuOpen(false); }} className="text-[#F7F7F7] font-black text-sm uppercase">English</button>
                   <span className="text-white/20">|</span>
-                  <button onClick={() => changeLanguage('he')} className="text-[#F7F7F7] font-black text-sm uppercase">עברית</button>
+                  <button onClick={() => { changeLanguage('he'); setMobileMenuOpen(false); }} className="text-[#F7F7F7] font-black text-sm uppercase">עברית</button>
                 </div>
               </div>
 

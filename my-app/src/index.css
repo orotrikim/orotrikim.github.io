@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  background-color: #0A0A0A;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -7,7 +8,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* --- REVERSAL & DIRECTION LOGIC --- */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Ensure Orotrikim stays LTR even when page is flipped */
+.notranslate {
+  display: inline-block;
+  direction: ltr !important;
+  unicode-bidi: isolate;
+}
+
+/* Kill the Google Translate toolbar if it tries to pop up */
+.goog-te-banner-frame.skiptranslate, 
+#goog-gt-tt, 
+.goog-te-balloon-frame { 
+  display: none !important; 
+}
+
+body { 
+  top: 0px !important; 
 }

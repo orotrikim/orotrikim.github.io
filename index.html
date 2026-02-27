@@ -8,13 +8,12 @@
       .goog-te-banner-frame.skiptranslate, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
       body { top: 0px !important; }
       #google_translate_element { display: none; }
-      .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
     </style>
     <script type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({
           pageLanguage: 'en',
-          // removing 'layout' often helps the cookie engine work better
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false
         }, 'google_translate_element');
       }
