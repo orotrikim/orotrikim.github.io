@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router";
-import { Github, Instagram, Youtube, Menu, X, Mail, ChevronDown, Lock } from "lucide-react";
+import { Github, Instagram, Youtube, Menu, X, Mail, ChevronDown, Lock, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
 import gearLogo from "../../assets/gear.png"; 
@@ -10,6 +10,15 @@ export function Header() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Helper to trigger Google Translate
+  const changeLanguage = (lang: string) => {
+    const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (selectElement) {
+      selectElement.value = lang;
+      selectElement.dispatchEvent(new Event('change'));
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -72,7 +81,6 @@ export function Header() {
     { label: "Sponsors", id: "sponsors" },
   ];
 
-  // Removed "Research" from here
   const pageLinks = [
     { label: "Team", path: "/team" },
     { label: "Code", path: "/code" },
@@ -151,6 +159,16 @@ export function Header() {
                         </button>
                       ))}
                     </div>
+                    <div className="h-px bg-[#606060]/20 w-full" />
+                    <div className="bg-[#1A1A1A]/50 py-1">
+                      <a 
+                        href="/admin/" 
+                        className="flex items-center gap-3 px-5 py-4 text-[11px] font-black uppercase text-[#FFFF00] hover:bg-[#FFFF00] hover:text-black transition-all group"
+                      >
+                        <Lock className="w-3.5 h-3.5" />
+                        Team Portal
+                      </a>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -167,6 +185,23 @@ export function Header() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFFF00] group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
+
+            {/* Desktop Language Selector */}
+            <div className="flex items-center gap-2 border-l border-white/10 pl-6 ml-2 h-6">
+              <button 
+                onClick={() => changeLanguage('en')}
+                className="text-[11px] font-black text-white/40 hover:text-[#FFFF00] transition-colors uppercase"
+              >
+                EN
+              </button>
+              <span className="text-white/10 text-[10px]">/</span>
+              <button 
+                onClick={() => changeLanguage('he')}
+                className="text-[11px] font-black text-white/40 hover:text-[#FFFF00] transition-colors uppercase"
+              >
+                HE
+              </button>
+            </div>
           </nav>
 
           <div className="hidden lg:flex items-center gap-6">
@@ -201,6 +236,17 @@ export function Header() {
             className="fixed inset-0 top-20 bg-[#0A0A0A] z-40 lg:hidden px-6 py-10"
           >
             <div className="flex flex-col h-full gap-8 overflow-y-auto">
+              
+              {/* Mobile Language Selection */}
+              <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                <Languages className="w-5 h-5 text-[#FFFF00]" />
+                <div className="flex gap-4">
+                  <button onClick={() => { changeLanguage('en'); setMobileMenuOpen(false); }} className="text-[#F7F7F7] font-black text-sm uppercase">English</button>
+                  <span className="text-white/20">|</span>
+                  <button onClick={() => { changeLanguage('he'); setMobileMenuOpen(false); }} className="text-[#F7F7F7] font-black text-sm uppercase">עברית</button>
+                </div>
+              </div>
+
               <div className="flex flex-col gap-4">
                 <p className="text-[#606060] text-[10px] font-bold uppercase tracking-[0.2em]">Quick Jump</p>
                 {sectionItems.map(item => (
@@ -228,6 +274,7 @@ export function Header() {
               </div>
 
               <div className="mt-auto pb-10 flex flex-col gap-4">
+                <a href="/admin/" className="w-full py-3 border border-[#FFFF00] text-[#FFFF00] font-bold text-center uppercase tracking-widest rounded-xl">Team Portal</a>
                 <a href="mailto:orotrikim@gmail.com" className="w-full py-4 bg-[#FFFF00] text-black font-extrabold text-center uppercase tracking-widest rounded-xl text-lg">Join Our Team</a>
               </div>
             </div>
